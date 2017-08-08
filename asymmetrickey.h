@@ -22,7 +22,7 @@ class QTSIMPLECRYPTOSHARED_EXPORT ASymmetricKey : public QObject
 	Q_ENUMS(KeyType)
 public:
 	enum KeyType {
-        RSA2048 = 0,
+		RSA2048 = 0,
 		RSA4096 = 1,	//recommended for messaging
 		ECDSA384 = 2,	//only for sign/verify
 		ECDSA521 = 3	//only for sign/verify
@@ -66,14 +66,14 @@ public:
 
 	/*! \brief Loads plain public key from byte array.*/
 	static ASymmetricKey *fromPublicKeyBytes(const QByteArray &pubkey, const KeyType &type);
-    static int getAsyncKeyLength(const KeyType &type);
+	static int getAsyncKeyLength(const KeyType &type);
 	static int getAsyncKeyLengthBits(const KeyType &type);
 
 	/*! \brief Saves the private key in file in encrypted format.*/
 	bool savePrivateKeyFile(const QString &destinationPath, const QByteArray &password, void *crypto, const int iterations) const;
 
-    /*! \brief Saves the public key in file.*/
-    bool savePublicKeyFile(const QString &destinationPath) const;
+	/*! \brief Saves the public key in file.*/
+	bool savePublicKeyFile(const QString &destinationPath) const;
 
 	/*! \brief Encrypts the private key into byte array.*/
 	const QByteArray encryptPrivateKey(const QByteArray &password, void *crypto, const int iterations) const;

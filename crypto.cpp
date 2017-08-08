@@ -9,14 +9,14 @@ extern "C" {
 #include "crypto.h"
 
 Crypto::Crypto(QObject *parent):
-    QObject(parent)
+	QObject(parent)
 {
-    qDebug() << "Crypto::Crypto";
+	qDebug() << "Crypto::Crypto";
 	init();
 }
 
 Crypto::~Crypto() {
-    qDebug() << "Crypto::~Crypto()";
+	qDebug() << "Crypto::~Crypto()";
 	EVP_CIPHER_CTX_cleanup(rsaEncryptCtx);
 	EVP_CIPHER_CTX_cleanup(aesEncryptCtx);
 	EVP_CIPHER_CTX_cleanup(rsaDecryptCtx);
@@ -36,7 +36,7 @@ const QByteArray Crypto::iterativeHash(const QByteArray &input, const QByteArray
 	static const char default_salt_value[] = "QtSimpleCrypto";
 	QByteArray used_salt;
 	if (salt.isEmpty())
-        used_salt = QByteArray::fromRawData(default_salt_value, sizeof(default_salt_value));
+		used_salt = QByteArray::fromRawData(default_salt_value, sizeof(default_salt_value));
 	else
 		used_salt = salt;
 

@@ -30,16 +30,16 @@ ASymmetricKey::ASymmetricKey(QObject *parent) :
 	d = new Private;
 	d->key = NULL;
 	d->hasPrivateKey=false;
-    d->hasPublicKey=false;
+	d->hasPublicKey=false;
 }
 
 ASymmetricKey::~ASymmetricKey()
 {
 	if (d->key) {
-        EVP_PKEY_free(d->key);
+		EVP_PKEY_free(d->key);
 	}
 	delete d;
-    qDebug() << "ASymmetricKey object was deleted successfully";
+	qDebug() << "ASymmetricKey object was deleted successfully";
 }
 
 bool ASymmetricKey::isValid() const
@@ -77,12 +77,12 @@ const QByteArray ASymmetricKey::encryptPrivateKey(const QByteArray &password, vo
 	}
 	Crypto *c = (Crypto*) crypto;
 	int use_iterations;
-    if (iterations > 1)
+	if (iterations > 1)
 		use_iterations = iterations;
 	else
 		use_iterations = QTSIMPLECRYPTO_DEFAULT_PRIVATE_KEY_HASH_ITERATIONS;
 
-    const QByteArray newpassword = c->iterativeHash(password, QByteArray(), use_iterations, Crypto::SHA256);
+	const QByteArray newpassword = c->iterativeHash(password, QByteArray(), use_iterations, Crypto::SHA256);
 	if (newpassword.isEmpty()) {
 		qCritical() << "hashing password failed";
 		return QByteArray();
@@ -105,12 +105,12 @@ ASymmetricKey *ASymmetricKey::decryptPrivateKey(const QByteArray &encrypted, con
 	Crypto *c = (Crypto *) crypto;
 
 	int use_iterations;
-    if (iterations > 1)
-        use_iterations = iterations;
+	if (iterations > 1)
+		use_iterations = iterations;
 	else
-        use_iterations = QTSIMPLECRYPTO_DEFAULT_PRIVATE_KEY_HASH_ITERATIONS;
+		use_iterations = QTSIMPLECRYPTO_DEFAULT_PRIVATE_KEY_HASH_ITERATIONS;
 
-    const QByteArray hash = c->iterativeHash(password, QByteArray(), use_iterations, Crypto::SHA256);
+	const QByteArray hash = c->iterativeHash(password, QByteArray(), use_iterations, Crypto::SHA256);
 	SymmetricKey key(hash, SymmetricKey::AES256);
 	const QByteArray decrypted = c->symmetricDecrypt(encrypted, key);
 	if (decrypted.length() < 1) {
@@ -140,12 +140,12 @@ ASymmetricKey *ASymmetricKey::fromPublicKeyFile(const QString &path, const KeyTy
 	EVP_PKEY *key;
 	key_file = fopen(path.toLocal8Bit(), "r");
 	if (!key_file) {
-        qCritical() << "ASymmetricKey::fromPublicKeyFile: Couldn't open public key file";
+		qCritical() << "ASymmetricKey::fromPublicKeyFile: Couldn't open public key file";
 		return NULL;
 	}
 
 	if ((key = PEM_read_PUBKEY(key_file, NULL, NULL, NULL)) == NULL) {
-        qCritical() << "ASymmetricKey::fromPublicKeyFile: Couldn't read private key";
+		qCritical() << "ASymmetricKey::fromPublicKeyFile: Couldn't read private key";
 		fclose(key_file);
 		return NULL;
 	}
@@ -163,17 +163,17 @@ ASymmetricKey::KeyType ASymmetricKey::getType() const
 ASymmetricKey *ASymmetricKey::fromPublicKeyBytes(const QByteArray &pubkey, const KeyType &type)
 {
 	BIO *bmem;
-    EVP_PKEY *key;
+	EVP_PKEY *key;
 
-    bmem = BIO_new(BIO_s_mem());
+	bmem = BIO_new(BIO_s_mem());
 
 	BIO_write(bmem, pubkey.data(), pubkey.length());
 
 	if ((key = PEM_read_bio_PUBKEY(bmem, NULL, NULL, NULL)) == NULL) {
-        qCritical() << "ASymmetricKey::fromPublicKeyData: Error reading public key";
+		qCritical() << "ASymmetricKey::fromPublicKeyData: Error reading public key";
 		BIO_free_all(bmem);
-        return NULL;
-    }
+		return NULL;
+	}
 
 	BIO_free_all(bmem);
 
@@ -226,52 +226,52 @@ bool ASymmetricKey::savePrivateKeyFile(const QString &destinationPath, const QBy
 		qCritical() << "failed to write to file";
 		goto out;
 	}
-    ret=true;
+	ret=true;
 
 out:
-    file.close();
-    return ret;
+	file.close();
+	return ret;
 }
 
 bool ASymmetricKey::savePublicKeyFile(const QString &destinationPath) const {
-    if (destinationPath.isEmpty() ) {
-        qCritical() << "missing arguments";
-        return false;
-    }
+	if (destinationPath.isEmpty() ) {
+		qCritical() << "missing arguments";
+		return false;
+	}
 
-    const QByteArray ba = getPublicKeyBytes();
+	const QByteArray ba = getPublicKeyBytes();
 
-    QFile file(destinationPath);
-    bool ret = false;
-    if (!file.open(QIODevice::WriteOnly)) {
-        qCritical() << "failed to open file for write access";
-        return false;
-    }
-    qDebug() << "Writing " << ba.length() << " bytes";
+	QFile file(destinationPath);
+	bool ret = false;
+	if (!file.open(QIODevice::WriteOnly)) {
+		qCritical() << "failed to open file for write access";
+		return false;
+	}
+	qDebug() << "Writing " << ba.length() << " bytes";
 
-    if (!file.write(ba)) {
-        qCritical() << "failed to write to file";
-        goto out;
-    }
-    ret=true;
+	if (!file.write(ba)) {
+		qCritical() << "failed to write to file";
+		goto out;
+	}
+	ret=true;
 
 out:
-    file.close();
-    return ret;
+	file.close();
+	return ret;
 }
 
 const QByteArray ASymmetricKey::getPrivateKeyBytes() const
 {
-    QByteArray ba;
+	QByteArray ba;
 	BIO *bmem = NULL;
 	int len, t;
 	char *p;
-    bmem = BIO_new(BIO_s_mem());
+	bmem = BIO_new(BIO_s_mem());
 
 	if (!PEM_write_bio_PrivateKey(bmem, d->key, NULL, NULL, 0, NULL, NULL)) {
-        qCritical() << "PEM_write_bio_PrivateKey failed: " << ERR_get_error();
-        goto out;
-    }
+		qCritical() << "PEM_write_bio_PrivateKey failed: " << ERR_get_error();
+		goto out;
+	}
 
 	t = BIO_flush(bmem);
 	(void) t;
@@ -288,7 +288,7 @@ const QByteArray ASymmetricKey::getPrivateKeyBytes() const
 out:
 	if (bmem)
 		BIO_free_all(bmem);
-    return ba;
+	return ba;
 }
 
 const QByteArray ASymmetricKey::getPublicKeyBytes() const
